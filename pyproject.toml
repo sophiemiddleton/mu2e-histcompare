@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mu2e-histcompare"
+version = "0.1.0"
+description = "Compare Mu2e DQM histograms with a reference run: KS, vision LLM, Hydra-style CNN"
+readme = "README.md"
+requires-python = ">=3.9"
+# mu2e-dqm (github.com/Mu2e/DQM, subdirectory python) is not on PyPI, so only its name is
+# given: install it from git in the same command (see README.md, Install).
+dependencies = [
+  "mu2e-dqm[hist,plot]",   # hist: dqm.hist (KS, reading); plot: dqm.plot (vision's images)
+  "numpy",
+  "matplotlib",
+  "pyyaml",
+]
+
+[project.optional-dependencies]
+vision = ["openai", "anthropic"]   # LiteLLM/OpenAI-compatible gateway, or the Anthropic API
+hydra = ["torch>=2.0"]
+test = ["pytest"]
+
+[project.urls]
+Homepage = "https://github.com/sophiemiddleton/mu2e-histcompare"
+
+# The vision and hydra code is in the mu2e-vision and mu2e-hydra submodules and is
+# packaged from there, so one install of this repo at a commit carries the submodule
+# commits it pins (pip and uv check out submodules for git URLs). The bundled plot
+# instructions are mu2e-vision's instructions/*.yaml.
+[tool.setuptools]
+package-dir = { "mu2e_histcompare" = "mu2e_histcompare", "histcompare" = "mu2e-vision/histcompare", "hydra_mu2e" = "mu2e-hydra/hydra_mu2e", "mu2e_histcompare._instructions" = "mu2e-vision/instructions" }
+packages = ["mu2e_histcompare", "histcompare", "hydra_mu2e", "mu2e_histcompare._instructions"]
+
+[tool.setuptools.package-data]
+"mu2e_histcompare._instructions" = ["*.yaml"]

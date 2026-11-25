@@ -54,3 +54,24 @@ def test_hydra_without_model_gives_no_verdict(tmp_path):
 
     r = hydra.compare(toy(50), "x/logchi2", tmp_path)
     assert r.verdict is None and "no model" in r.detail
+
+
+def test_ks_different_binning_gives_no_verdict():
+    other = hist.Hist(hist.axis.Regular(25, 0, 100))
+    other.fill(np.random.default_rng(3).normal(50, 10, 20000))
+    r = ks.compare(toy(50), other, "x/PEr")
+    assert r.verdict is None and r.evidence["status"] == "cantCompare"
+
+
+def test_ks_evidence():
+    r = ks.compare(toy(60), toy(50, seed=2), "x/PEr")
+    assert r.evidence["status"] == "fail" and 0 < r.evidence["max_cdf_difference"] <= 1
+    assert r.row().keys() == {"method", "histogram", "verdict", "score", "detail"}
+
+
+def test_bundled_instructions():
+    from mu2e_histcompare import instructions
+
+    assert "crv_real_draft" in instructions.available()
+    plots = instructions.load("crv_real_draft")
+    assert "PEr" in plots and plots == instructions.load(str(instructions.path("crv_real_draft")))

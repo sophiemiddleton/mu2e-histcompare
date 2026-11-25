@@ -3,7 +3,7 @@ Compare a run's DQM histograms with a reference run, by any of the three methods
 
     python -m mu2e_histcompare --input RUN.root --reference REF.root \
         --method ks vision hydra \
-        --instructions mu2e-vision/instructions/crv_real_draft.yaml \
+        --instructions crv_real_draft \
         --base-url https://litellm.fnal.gov/v1 --model azure/claude-opus-5-5 \
         --hydra-models ../HistCompare/mu2e-hydra/results/real-006-001-C/models \
         --out results.csv
@@ -37,7 +37,8 @@ def main(argv=None) -> int:
     ap.add_argument("--reference", required=True, help="DQM ROOT file of the golden run")
     ap.add_argument("--method", nargs="+", choices=METHODS, default=["ks"])
     ap.add_argument("--hist", nargs="*", help="histogram paths, e.g. crvRecoDQM/PEr")
-    ap.add_argument("--instructions", help="plot instructions YAML (required for vision)")
+    ap.add_argument("--instructions", help="plot instructions: a bundled name (crv_real_draft) or a "
+                                           "YAML path (required for vision)")
     ap.add_argument("--run-type", default="cosmics")
     ap.add_argument("--out", help="write the results as CSV here (default: print a table only)")
     g = ap.add_argument_group("ks")
@@ -54,7 +55,7 @@ def main(argv=None) -> int:
 
     instructions = {}
     if args.instructions:
-        from histcompare.context import load_instructions
+        from .instructions import load as load_instructions
         instructions = load_instructions(args.instructions)
     if "vision" in args.method and not (args.instructions and args.model):
         ap.error("--method vision needs --instructions and --model")

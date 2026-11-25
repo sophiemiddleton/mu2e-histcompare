@@ -42,4 +42,5 @@ def compare(hist, path: str, models_dir, threshold: float = THRESHOLD) -> Result
     edges = np.asarray(hist.axes[0].edges, dtype=float)
     img = render(counts, edges)
     p = float(predict(load_model(str(mp)), img[None, None])[0])
-    return Result("hydra", path, BAD if p > threshold else GOOD, p, str(mp))
+    return Result("hydra", path, BAD if p > threshold else GOOD, p, str(mp),
+                  {"p_bad": round(p, 4), "threshold": threshold, "model": str(mp)})
