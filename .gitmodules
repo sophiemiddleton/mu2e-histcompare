@@ -1,0 +1,6 @@
+[submodule "mu2e-vision"]
+	path = mu2e-vision
+	url = https://github.com/sophiemiddleton/mu2e-vision.git
+[submodule "mu2e-hydra"]
+	path = mu2e-hydra
+	url = https://github.com/sophiemiddleton/mu2e-hydra.git
