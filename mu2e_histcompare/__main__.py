@@ -5,7 +5,7 @@ Compare a run's DQM histograms with a reference run, by any of the three methods
         --method ks vision hydra \
         --instructions crv_real_draft \
         --base-url https://litellm.fnal.gov/v1 --model azure/claude-opus-5-5 \
-        --hydra-models ../HistCompare/mu2e-hydra/results/real-006-001-C/models \
+        --hydra-models path/to/hydra-models \
         --out results.csv
 
 The histograms come from --hist (paths in the file) or, if --hist is omitted, from the
